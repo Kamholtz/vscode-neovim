@@ -457,6 +457,18 @@
             {
                 "command": "vscode-neovim.ctrl-y",
                 "title": "Neovim: ctrl-y"
+            },
+            {
+                "command": "vscode-neovim.toggle-enabled",
+                "title": "Neovim: Toggle enabled"
+            },
+            {
+                "command": "vscode-neovim.enable",
+                "title": "Neovim: Enable"
+            },
+            {
+                "command": "vscode-neovim.disable",
+                "title": "Neovim: Disable"
             }
         ],
         "keybindings": [

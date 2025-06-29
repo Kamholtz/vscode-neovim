@@ -2,7 +2,7 @@ import { ChildProcess, spawn } from "child_process";
 import path from "path";
 
 import { attach, findNvim, NeovimClient } from "neovim";
-import vscode, { Disposable, ExtensionKind, Range, window, type ExtensionContext } from "vscode";
+import vscode, { Disposable, ExtensionKind, Range, window, type ExtensionContext, commands } from "vscode";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { transports as loggerTransports, createLogger as winstonCreateLogger } from "winston";
 
@@ -136,6 +136,24 @@ export class MainController implements vscode.Disposable {
             (this.commandLineManager = new CommandLineManager(this)),
             (this.statusLineManager = new StatusLineManager(this)),
             (this.messagesManager = new MessagesManager(this)),
+        );
+
+        this.disposables.push(
+            commands.registerCommand("vscode-neovim.toggle-enabled", () => {
+                console.warn("vscode-neovim.toggle-enabled");
+                this.cursorManager.isEnabled = !this.cursorManager.isEnabled;
+                this.modeManager.isEnabled = !this.modeManager.isEnabled;
+            }),
+            commands.registerCommand("vscode-neovim.enable", () => {
+                console.warn("vscode-neovim.enable");
+                this.cursorManager.isEnabled = true;
+                this.modeManager.isEnabled = true;
+            }),
+            commands.registerCommand("vscode-neovim.disable", () => {
+                console.warn("vscode-neovim.disable");
+                this.cursorManager.isEnabled = false;
+                this.modeManager.isEnabled = false;
+            }),
         );
 
         logger.debug(`UIAttach`);

@@ -1,4 +1,4 @@
-import { Disposable, EventEmitter } from "vscode";
+import { Disposable, EventEmitter, commands, window } from "vscode";
 
 import { eventBus, EventBusData } from "./eventBus";
 import { createLogger } from "./logger";
@@ -57,6 +57,7 @@ export class ModeManager implements Disposable {
      * True when macro recording in insert mode
      */
     private isRecording = false;
+    public isEnabled = true;
     private eventEmitter = new EventEmitter();
 
     constructor() {
@@ -72,6 +73,7 @@ export class ModeManager implements Disposable {
                 this,
             ),
         );
+        this.disposables.push(window.onDidChangeActiveTextEditor(this.onDidChangeActiveTextEditor));
     }
 
     public get currentMode(): Mode {
@@ -113,6 +115,14 @@ export class ModeManager implements Disposable {
         logger.debug(`Setting mode context to ${this.mode.name}`);
         this.eventEmitter.fire(null);
     }
+
+    private onDidChangeActiveTextEditor = (): void => {
+        console.warn("onDidChangeActiveTextEditor");
+        if (this.isEnabled && !this.isNormalMode) {
+            console.warn("onDidChangeActiveTextEditor: escape");
+            commands.executeCommand("vscode-neovim.escape");
+        }
+    };
 
     dispose() {
         disposeAll(this.disposables);

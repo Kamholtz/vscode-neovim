@@ -244,6 +244,8 @@ export class CursorManager implements Disposable {
         return func;
     };
 
+    public isEnabled = false;
+
     /**
      * Update cursor in active editor. Creates visual selections if appropriate.
      */
@@ -254,9 +256,10 @@ export class CursorManager implements Disposable {
         await this.main.changeManager.getDocumentChangeCompletionLock(editor.document);
 
         if (
-            this.main.modeManager.isInsertMode &&
-            !this.wantInsertCursorUpdate(editor) &&
-            !this.main.modeManager.isRecordingInInsertMode
+            (this.main.modeManager.isInsertMode &&
+                !this.wantInsertCursorUpdate(editor) &&
+                !this.main.modeManager.isRecordingInInsertMode) ||
+            !this.isEnabled
         ) {
             logger.debug(`Skipping insert cursor update in editor`);
             this.cursorUpdatePromise.get(editor)?.resolve();
